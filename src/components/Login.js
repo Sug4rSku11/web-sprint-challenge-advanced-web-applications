@@ -1,12 +1,63 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
+import axios from 'axios';
+import { useHistory } from 'react-router';
+import { thisExpression } from '@babel/types';
+import { render } from 'react-dom';
+
+
 
 const Login = () => {
+    const { push } = useHistory();
+    const [credentials, setCredentials] = useState({
+        username: '',
+        password: ''
+    });
+  
+    const [errorMessage, setErrorMessage] = useState(false);
+
+    const handleChange = e => {
+        setCredentials({
+            ...credentials,
+                [e.target.name]: e.target.value
+            }
+        )};
+   
+    const handleSubmit = e => {
+        e.preventDefault();
+        setErrorMessage(true);
+        axios.post('http://localhost:5000/api/login', credentials)
+        .then(resp => {
+            localStorage.setItem('token', resp.data.token);
+            localStorage.setItem('role', resp.data.role);
+            localStorage.setItem('username', resp.data.username);
+            push('/view');
+        })
+        .catch(err => {
+            console.log(err)
+        })
+    };
     
     return(<ComponentContainer>
         <ModalContainer>
             <h1>Welcome to Blogger Pro</h1>
             <h2>Please enter your account information.</h2>
+            <form onSubmit={handleSubmit}>
+                <input id="username"
+                    type="text"
+                    name="username"
+                    value={credentials.username}
+                    onChange={handleChange}
+                />
+                <input id="password"
+                    type="password"
+                    name="password"
+                    value={credentials.password}
+                    onChange={handleChange}
+                />
+                <button id="submit">Log In</button>
+             </form>
+            {errorMessage && <p id="error">Incorrect username / password combination.</p>}
         </ModalContainer>
     </ComponentContainer>);
 }
