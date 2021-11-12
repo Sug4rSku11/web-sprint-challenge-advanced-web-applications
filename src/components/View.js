@@ -1,5 +1,6 @@
 // import axios from 'axios';
 import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import articleService from '../services/articleServices';
 import axiosWithAuth from '../utils/axiosWithAuth';
@@ -11,38 +12,39 @@ const View = (props) => {
     const [articles, setArticles] = useState([]);
     const [editing, setEditing] = useState(false);
     const [editId, setEditId] = useState();
+    const { article } = useParams();
 
     useEffect(() => {
         axiosWithAuth()
-        .get('http://localhost:5000/api/articles/')
-        .then(resp => {
-            setArticles(resp.data)
-        }).catch(err => {
-            console.log(err)
-        })
+            .get(`http://localhost:5000/api/articles/`)
+            .then(resp => {
+                setArticles(resp.data)
+            }).catch(err => {
+                console.log(err)
+            })
     }, [])
 
     const handleDelete = (id) => {
         axiosWithAuth()
-        .delete(`http://localhost:5000/api/articles/${id}`)
-        .then(resp => {
-            articleService(setArticles);
-        })
-        .catch(err => {
-            console.log(err);
-        })
+            .delete(`http://localhost:5000/api/articles/${id}`)
+            .then(resp => {
+                setArticles(articles.filter(item => (item.id !== id)));
+            })
+            .catch(err => {
+                console.log(err);
+            })
     }
 
     const handleEdit = (article) => {
         axiosWithAuth()
-        .put(`http://localhost:5000/api/articles/${articles.id}`, article)
-        .then(resp => {
-            setArticles(resp.data);
-            setEditing(false)
-        })
-        .catch(err => {
-            console.log(err);
-        })
+            .put(`http://localhost:5000/api/articles/${articles.id}`, article)
+            .then(resp => {
+                setArticles(resp.data);
+                setEditing(false)
+            })
+            .catch(err => {
+                console.log(err);
+            })
     }
 
     const handleEditSelect = (id)=> {

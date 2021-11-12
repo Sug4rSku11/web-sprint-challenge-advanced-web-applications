@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import axios from 'axios';
 import axiosWithAuth from '../utils/axiosWithAuth';
 
 const initialArticle = {
@@ -21,6 +20,17 @@ const EditForm = (props)=> {
             [e.target.name]: e.target.value
         })
     }
+
+    useEffect(() => {
+        axiosWithAuth()
+            .get(`http://localhost:5000/api/articles/${editId}`)
+            .then(resp => {
+                setArticle(resp.data)
+            })
+            .catch(err => {
+                console.log(err);
+            })
+    }, [])
 
     const handleSubmit = (e) => {
         e.preventDefault();
