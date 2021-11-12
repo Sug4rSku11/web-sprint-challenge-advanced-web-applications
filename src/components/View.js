@@ -12,7 +12,7 @@ const View = (props) => {
     const [articles, setArticles] = useState([]);
     const [editing, setEditing] = useState(false);
     const [editId, setEditId] = useState();
-    const { article } = useParams();
+    // const { article } = useParams();
 
     useEffect(() => {
         axiosWithAuth()
