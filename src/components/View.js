@@ -12,11 +12,10 @@ const View = (props) => {
     const [articles, setArticles] = useState([]);
     const [editing, setEditing] = useState(false);
     const [editId, setEditId] = useState();
-    // const { article } = useParams();
+   
 
     useEffect(() => {
-        axiosWithAuth()
-            .get(`http://localhost:5000/api/articles/`)
+        articleService()
             .then(resp => {
                 setArticles(resp.data)
             }).catch(err => {
